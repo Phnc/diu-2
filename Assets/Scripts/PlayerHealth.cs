@@ -36,16 +36,53 @@ public class PlayerHealth : MonoBehaviour
     public CanvasGroup endCanvasGroup;
     public Text endGameUiText;
 
+    public Animator animator;
+
+    bool isPaused = false;
+
     void Start()
     {
+        endText = "Start";
+        endGameUiText.text = endText;
+        endCanvasGroup.alpha = 1;
+        Time.timeScale = 0;
+        isPaused = !isPaused;
+
         currentHealth = fullHealth;
         playerAudioSource = GetComponent<AudioSource>();
-
         bloodText.text = currentHealth.ToString();
+    }
+
+    public void Pause()
+    {
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            return;
+        }
+
+        if (!isPaused)
+        {
+            endText = "Paused";
+            endGameUiText.text = endText;
+            endCanvasGroup.alpha = 1;
+            isPaused = !isPaused;
+            Time.timeScale = 0;
+        }
+        else
+        {
+            endCanvasGroup.alpha = 0;
+            isPaused = !isPaused;
+            Time.timeScale = 1;
+        }
     }
 
     void Update()
     {
+        if (Input.GetKeyDown("escape"))
+        {
+            Pause();
+        }
+
         if (damaged)
         {
             damageIndicator.color = flashColor;
@@ -71,6 +108,7 @@ public class PlayerHealth : MonoBehaviour
     {
         endGameUiText.text = endText;
         endCanvasGroup.alpha = 1;
+        Destroy(gameObject);
         print(endText);
     }
 
@@ -82,13 +120,20 @@ public class PlayerHealth : MonoBehaviour
             return;
         }
 
+        if (animator.GetCurrentAnimatorStateInfo(0).IsName("Block"))
+        {
+            damage -= 5;
+        }
+
         currentHealth -= damage;
+        animator.SetTrigger("Hurt");
         playerAudioSource.PlayOneShot(damageAudio);
         damaged = true;
         bloodText.text = currentHealth.ToString();
 
         if (currentHealth <= 0)
         {
+            animator.SetTrigger("Death");
             Die();
         }
     }

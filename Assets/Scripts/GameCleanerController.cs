@@ -17,6 +17,13 @@ public class GameCleanerController : MonoBehaviour
     public void Restart()
     {
         SceneManager.LoadScene("Main");
+        Time.timeScale = 1;
+    }
+
+    public void Resume()
+    {
+        Time.timeScale = 1;
+        FindObjectOfType<PlayerHealth>().Pause();
     }
 
     public void Stop()

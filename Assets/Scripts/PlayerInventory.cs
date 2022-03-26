@@ -19,7 +19,7 @@ public class PlayerInventory : MonoBehaviour
         CoinsQuantity++;
         coinCount.text = CoinsQuantity.ToString();
 
-        if( CoinsQuantity >= 3)
+        if( CoinsQuantity >= 5)
         {
             GetComponent<PlayerHealth>().EndGame();
         }
